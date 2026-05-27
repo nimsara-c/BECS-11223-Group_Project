@@ -38,6 +38,9 @@ struct packageInfoBlock{
     unsigned int voice;  // in mins
 };
 
+// Global Variables
+unsigned int g_usrCount = 0;
+
 int loadUserInfoData(struct userInfoBlock *_userList, unsigned int _maxSize){
 
     FILE *fptr;
@@ -58,6 +61,8 @@ int loadUserInfoData(struct userInfoBlock *_userList, unsigned int _maxSize){
         count++;
 
     }
+
+    g_usrCount = count;
 
     fclose(fptr);
 
@@ -118,8 +123,44 @@ int loadPackageInfoData(struct packageInfoBlock *_pkgList, unsigned int _maxSize
 
 
 
-int updateUserInfoFile(struct userInfoBlock *_currUserList, unsigned int index, unsigned int column){
-    
+int updateUserInfoFile(struct userInfoBlock *_updatedUserList){
+
+    FILE *fptr;
+
+    fptr = fopen("user_info.txt", "r");
+
+    if (fptr == NULL) {
+        printf("Error: Could not open user_info file.\n");
+        return ERROR;
+    }
+
+    for (unsigned int i = 0; i < g_usrCount; i++) {
+        fprintf(fptr, "%s %s %s %d\n", _updatedUserList[i].mobNum, _updatedUserList[i].nicNum, _updatedUserList[i].custName, _updatedUserList[i].conType);
+    }
+
+    fclose(fptr);
+
+    return SUCCESS;
+}
+
+int updateMobileNoInfoFile(struct mobileNoInfoBlock *_updatedMobileNoList){
+
+    FILE *fptr;
+
+    fptr = fopen("user_info.txt", "r");
+
+    if (fptr == NULL) {
+        printf("Error: Could not open user_info file.\n");
+        return ERROR;
+    }
+
+    for (unsigned int i = 0; i < g_usrCount; i++) {
+        printf("%s %f %u %u %u %d\n", _updatedMobileNoList[i].mobNum, _updatedMobileNoList[i].amount, _updatedMobileNoList[i].remData, _updatedMobileNoList[i].remVoice, _updatedMobileNoList[i].billDate, _updatedMobileNoList[i].state);
+    }
+
+    fclose(fptr);
+
+    return SUCCESS;
 }
 
 int main() {
@@ -127,15 +168,15 @@ int main() {
     struct userInfoBlock userInfoList[MAX_NO_OF_USERS];
     loadUserInfoData(userInfoList, MAX_NO_OF_USERS);
 
-    struct mobileNoInfoBlock mobileNoList[MAX_NO_OF_USERS];
-    loadMobileNoInfoData(mobileNoList, MAX_NO_OF_USERS);
+    //struct mobileNoInfoBlock mobileNoList[MAX_NO_OF_USERS];
+    //loadMobileNoInfoData(mobileNoList, MAX_NO_OF_USERS);
 
-    struct packageInfoBlock packageList[NO_OF_PACKAGES];
-    loadPackageInfoData(packageList, NO_OF_PACKAGES);
+    //struct packageInfoBlock packageList[NO_OF_PACKAGES];
+    //loadPackageInfoData(packageList, NO_OF_PACKAGES);
 
-    for(int i=0; i < NO_OF_PACKAGES; i++){
-        printf("%d\n", packageList[i].value);
-    }
+    updateUserInfoFile(userInfoList);
+
+    printf("User Count: %u\n", g_usrCount);
 
     return 0;
 }
