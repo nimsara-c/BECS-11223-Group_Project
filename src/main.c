@@ -308,6 +308,8 @@ int run(){
     struct packageInfoBlock packageList[NO_OF_PACKAGES];
     loadPackageInfoData(packageList, NO_OF_PACKAGES);
 
+    int isMobNumDeactivated = 0;
+
     while(1){
 
         printf("Display payment due users?");
@@ -316,7 +318,7 @@ int run(){
         }
 
         while(1){
-            printf("Enter Mobile Number: ");
+            printf("\n> Enter Mobile Number: ");
             char inputMobNum[11];
             scanf("%s", inputMobNum);
 
@@ -324,14 +326,47 @@ int run(){
 
             // Mobile No does not exist. So create a new user.
             if(index == 0){
-                printf("\n* Mobile No doesn't exist! Creating a new user *!\n\n");
+                printf("\n* Mobile No doesn't exist! Creating a new user! *\n\n");
                 createNewUser(userInfoList, mobileNoList, (const char*)inputMobNum);
                 //updateUserInfoFile(userInfoList);
                 continue;
             }
             else{
-                printf("* User exists with index = %u\n *", index);
+                printf("* User exists with index = %u *\n", index);
+                if(mobileNoList[index].state == 0){
+                    isMobNumDeactivated = 1;
+                    break;
+                }
+
+                printf("+ What do you want to do?\n\t1 - Balance inquiry\n\t2 - Recharge\n\t3 - Activate a Package\n\n> ");
+                int choice;
+                scanf("%d", &choice);
+
+                if(choice == 1){  // Balance Inquiry
+                    printf("\n----------  BALANCE INQUIRY  ----------\n");
+                    printf("-Mobile No: %s\n", mobileNoList[index-1].mobNum);
+                    printf("- Connection Type: %s\n", userInfoList[index - 1].conType == PREPAID ? "PREPAID" : "POSTPAID");
+                    printf("- Balance: %.2f\n- Data: %u MB\n- Voice: %u Mins\n", mobileNoList[index].amount, mobileNoList[index].remData, mobileNoList[index].remVoice);
+                    if(mobileNoList[index].billDate != 0){
+                        printf("- Billing Date: %u\n", mobileNoList[index].billDate);
+                    }
+                }
+                else if(choice == 2){  // Recharge
+
+                }
+                else if(choice == 3){ // Activate a Package
+
+                }
+                else{
+                    printf("\n# Invalid input!\n");
+                }
+
             }
+        }
+
+        if(isMobNumDeactivated){
+            isMobNumDeactivated = 0;
+            continue;
         }
         
 
