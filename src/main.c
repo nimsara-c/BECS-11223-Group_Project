@@ -154,7 +154,7 @@ int updateMobileNoInfoFile(struct mobileNoInfoBlock *_updatedMobileNoList){
 
     FILE *fptr;
 
-    fptr = fopen("user_info.txt", "w");
+    fptr = fopen("mobile_num_info.txt", "w");
 
     if (fptr == NULL) {
         printf("Error: Could not open mobile_num_info file.\n");
@@ -248,13 +248,12 @@ int runActivateOrDeactivateNums(struct mobileNoInfoBlock *_mobileNoList){
 
 int createNewUser(struct userInfoBlock *_userInfoList, struct mobileNoInfoBlock *_mobileNoList, const char *_inputMobNum){
 
-    struct userInfoBlock tempUsrData;
     printf("----------  Enter New User Info  ----------\n");
     printf("NIC No: ");
-    scanf("%s", tempUsrData.nicNum);
+    scanf("%s", _userInfoList[g_usrCount].nicNum);
     printf("Customer Name: ");
-    scanf("%s", tempUsrData.custName);
-    strcpy(tempUsrData.mobNum, _inputMobNum);
+    scanf("%s", _userInfoList[g_usrCount].custName);
+    strcpy(_userInfoList[g_usrCount].mobNum, _inputMobNum);
 
     // Connection type error handling loop
     while(1){
@@ -264,7 +263,7 @@ int createNewUser(struct userInfoBlock *_userInfoList, struct mobileNoInfoBlock 
         scanf("%d", &tempConnType);
 
         if(tempConnType == 0 || tempConnType == 1){
-            tempUsrData.conType = tempConnType;
+            _userInfoList[g_usrCount].conType = tempConnType;
             break;
         }
         else{
@@ -274,27 +273,21 @@ int createNewUser(struct userInfoBlock *_userInfoList, struct mobileNoInfoBlock 
 
     if(g_usrCount < MAX_NO_OF_USERS){
 
-        _userInfoList[g_usrCount] = tempUsrData;
         printUserInfoBlock(_userInfoList[g_usrCount]);
 
-        struct mobileNoInfoBlock tempMobInfo;
-        strcpy(tempMobInfo.mobNum, tempUsrData.mobNum);
-        tempMobInfo.amount = 0.0;
-        tempMobInfo.remData = 0;
-        tempMobInfo.remVoice = 0;
-        tempMobInfo.state = 1;
-        if(tempUsrData.conType == POSTPAID){
-            tempMobInfo.billDate = getTodaysDate();
+        strcpy(_mobileNoList[g_usrCount].mobNum, _inputMobNum);
+        _mobileNoList[g_usrCount].amount = 0.0;
+        _mobileNoList[g_usrCount].remData = 0;
+        _mobileNoList[g_usrCount].remVoice = 0;
+        _mobileNoList[g_usrCount].state = 1;
+        if(_userInfoList[g_usrCount].conType == POSTPAID){
+             _mobileNoList[g_usrCount].billDate = getTodaysDate();
         }
         else{
-            tempMobInfo.billDate = 0;
+             _mobileNoList[g_usrCount].billDate = 0;
         }
 
-        _mobileNoList[g_usrCount] = tempMobInfo;
-
-        printf("usrCount: %u", g_usrCount);
         g_usrCount++;
-        printf("usrCount: %u", g_usrCount);
 
         updateUserInfoFile(_userInfoList);
         updateMobileNoInfoFile(_mobileNoList);
@@ -332,7 +325,7 @@ int run(){
             // Mobile No does not exist. So create a new user.
             if(index == 0){
                 printf("\n* Mobile No doesn't exist! Creating a new user *!\n\n");
-                createNewUser(userInfoList, mobileNoList, inputMobNum);
+                createNewUser(userInfoList, mobileNoList, (const char*)inputMobNum);
                 //updateUserInfoFile(userInfoList);
                 continue;
             }
