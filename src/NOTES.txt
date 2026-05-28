@@ -1,3 +1,19 @@
+
+----------  FUTURE ENHANCEMENTS  ---------------
+ - Increase no. of users
+ - Add a database instead of text files 
+ - 
+
+
+----------- CHANGES FROM FLOWCHART  -------------
+ - Added a globar g_usrCount variable
+ - Removed "_mobileNoList[i].billDate != 0" from condition in "Display payment due users?".
+ - Entering only the index of the due users to Activate/Deactivate.
+
+
+
+
+
 ------------   BACKUPS   -------------------
         
          -  package_info.txt  -
