@@ -351,12 +351,15 @@ int run(){
                         printf("- Billing Date: %u\n", mobileNoList[index].billDate);
                     }
                 }
+
                 else if(choice == 2){  // Recharge
 
                 }
+
                 else if(choice == 3){ // Activate a Package
 
                 }
+                
                 else{
                     printf("\n# Invalid input!\n");
                 }
